@@ -5,6 +5,10 @@
 ## Project Overview
 
 This project demonstrates four critical web application vulnerabilities from the OWASP Top 10:
+1.**SQL Injection (A03:2021)** - Injection attacks
+2.**Insecure Direct Object Reference - IDOR (A01:2021)** - Broken Access Control
+3.
+4.
 ## Educational Use Only
 
 This application is designed for:
