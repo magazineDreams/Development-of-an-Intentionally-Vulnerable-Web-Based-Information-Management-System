@@ -1,4 +1,10 @@
-# vulnerable-web
+# Intentionally Vulnerable Information Management System
+
+⚠️ **WARNING**: This application contains intentional security vulnerabilities for educational purposes only. DO NOT deploy in production or expose to the internet.
+
+## Project Overview
+
+This project demonstrates four critical web application vulnerabilities from the OWASP Top 10:
 ## Educational Use Only
 
 This application is designed for:
