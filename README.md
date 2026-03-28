@@ -1,6 +1,6 @@
 # Intentionally Vulnerable Information Management System
 
-⚠️ **WARNING**: This application contains intentional security vulnerabilities for educational purposes only. DO NOT deploy in production or expose to the internet.
+⚠️ **WARNING**: This application contains intentional security vulnerabilities for educational purposes only.
 
 ## Project Overview
 
