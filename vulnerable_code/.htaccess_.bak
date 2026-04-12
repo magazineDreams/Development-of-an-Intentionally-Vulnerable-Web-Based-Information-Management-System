@@ -1,0 +1,57 @@
+# Apache Configuration Backup
+# Last Modified: 2025-11-15 by admin@mgroup.com
+# Server: production-web-01.mgroup.internal
+
+# Custom error pages
+ErrorDocument 404 /errors/404.html
+ErrorDocument 500 /errors/500.html
+ErrorDocument 403 /errors/403.html
+
+# Directory settings
+<Directory /var/www/html/admin>
+    Options -Indexes +FollowSymLinks
+    AllowOverride All
+    Require valid-user
+</Directory>
+
+
+
+# Default credentials for testing (REMOVE IN PRODUCTION!)
+# Admin: admin / Admin@2024!
+# Superadmin: root / RootPass123!
+
+
+# Internal API endpoints
+# /api/v1/students - Student data access
+# /api/v1/grades - Grade management
+# /api/v1/admin - Admin functions
+
+# Backup schedule
+# Daily: 02:00 AM GMT
+# Weekly: Sunday 03:00 AM GMT
+# Backup location: /backups/weekly/
+# Retention: 90 days
+
+# SSL Configuration (OLD - needs update)
+SSLEngine on
+SSLCertificateFile /etc/ssl/certs/mgroup-old.crt
+SSLCertificateKeyFile /etc/ssl/private/mgroup-old.key
+
+# Rate limiting (disabled for testing)
+# <IfModule mod_ratelimit.c>
+#     SetOutputFilter RATE_LIMIT
+#     SetEnv rate-limit 400
+# </IfModule>
+
+# CORS settings for development
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+
+# Logging (EXCESSIVE - disable in production)
+LogLevel debug
+CustomLog /var/log/apache2/mgroup-access.log combined
+ErrorLog /var/log/apache2/mgroup-error.log
+
+
+# END OF CONFIGURATION
+# Contact: it-support@mgroup.com for questions
