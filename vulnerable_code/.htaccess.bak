@@ -1,5 +1,0 @@
-# Apache config backup
-AuthType Basic
-AuthName "Admin Area"
-AuthUserFile /var/www/.htpasswd
-Require user admin
