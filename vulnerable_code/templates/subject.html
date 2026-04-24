@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ subject.name }} — MMU Media</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='assets/MMUMediaLogo.png') }}" alt="MMU Media Logo" height="44">
+    </div>
+    <nav class="nav-buttons">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">Menu</button>
+  </header>
+
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="profile">
+        <div class="avatar">{{ session.user_name[0] | upper }}{{ session.user_last_name[0] | upper }}</div>
+        <div class="identity">
+          <div class="name">{{ session.user_name }} {{ session.user_last_name }}</div>
+          <div class="status">Active</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+        <a href="{{ url_for('firstPage') }}">Events &amp; Announcements</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('contact') }}">Contact Page</a>
+        <a href="{{ url_for('logout') }}" class="nav-logout">🔓 Logout</a>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- Subject Header Banner -->
+      <div class="subject-header">
+        <ol class="breadcrumb">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li>{{ subject.name }}</li>
+        </ol>
+        <div>
+          <span class="subject-badge">{{ subject.code }}</span>
+          <span style="color:#cce5f3; font-size:0.9rem; margin-left:8px;">— {{ subject.course_name }}</span>
+        </div>
+        <h1>{{ subject.name }}</h1>
+        <p>{{ subject.description }}</p>
+
+        <!-- Tutor Card -->
+        <div class="tutor-card">
+          <div class="tutor-label">📋 Subject Tutor</div>
+          <div class="tutor-identity">
+            <div class="tutor-icon">👤</div>
+            <div>
+              <div class="tutor-name">{{ subject.tutor_name }}</div>
+              <span class="tutor-role-badge">Tutor</span>
+            </div>
+          </div>
+          <ul class="tutor-details">
+            {% if subject.tutor_email %}
+            <li><icon class="icon">✉️</icon> <a href="mailto:{{ subject.tutor_email }}">{{ subject.tutor_email }}</a></li>
+            {% endif %}
+            <li><icon class="icon">🚪</icon> Office: <strong style="color:white;">{{ subject.tutor_office_number }}</strong></li>
+            <li><icon class="icon">🕐</icon> Office Hours: <strong style="color:white;">{{ subject.tutor_office_hours }}</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Announcements -->
+      <div class="panel">
+        <h2 class="section-title">
+          📢 Announcements
+          <span class="badge-count badge-warning" style="margin-left:8px;">{{ announcements | length }}</span>
+        </h2>
+
+        {% for ann in announcements %}
+        <div class="ann-card">
+          <div class="ann-card-head">
+            <h4>{{ ann.title }}</h4>
+            <small>{{ ann.posted_at }}</small>
+          </div>
+          <div class="ann-author">👤 {{ ann.author }}</div>
+          <div class="ann-content">{{ ann.content }}</div>
+        </div>
+        {% else %}
+        <p class="empty-state">No announcements yet.</p>
+        {% endfor %}
+
+        {% if session.user_role in ('tutor', 'admin') %}
+        <!-- Post Announcement Form -->
+        <div class="form-panel" style="margin-top:16px;">
+          <h5>Post an Announcement</h5>
+          <form method="POST" action="{{ url_for('post_announcement', subject_id=subject.id) }}">
+            <div class="form-group">
+              <label for="ann-title">Title</label>
+              <input type="text" id="ann-title" name="title" placeholder="Announcement title" required>
+            </div>
+            <div class="form-group">
+              <label for="ann-content">Content</label>
+              <textarea id="ann-content" name="content" rows="3" placeholder="Announcement content..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning">📢 Post Announcement</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+
+      <hr class="divider">
+
+      <!-- Comments -->
+      <div class="panel">
+        <h2 class="section-title">
+          💬 Comments
+          <span class="badge-count badge-muted" style="margin-left:8px;">{{ comments | length }}</span>
+        </h2>
+
+        {% for comment in comments %}
+        <div class="comment-card">
+          <div class="comment-head">
+            <span class="comment-author">👤 {{ comment.author }}</span>
+            <span class="comment-date">{{ comment.posted_at }}</span>
+          </div>
+          <div class="comment-body">{{ comment.content | safe}}</div>
+        </div>
+        {% else %}
+        <p class="empty-state">No comments yet. Be the first!</p>
+        {% endfor %}
+
+        <!-- Leave a Comment Form -->
+        <div class="form-panel" style="margin-top:16px;">
+          <h5>Leave a Comment</h5>
+          <form method="POST" action="{{ url_for('add_comment', subject_id=subject.id) }}">
+            <div class="form-group">
+              <label for="comment-content">Your Comment</label>
+              <textarea id="comment-content" name="content" rows="4" placeholder="Write your comment here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">✉️ Post Comment</button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- RIGHT RAIL -->
+    <aside class="right">
+
+      <!-- Subject Stats -->
+      <section class="panel">
+        <h3 class="section-title">Subject Stats</h3>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="num">{{ announcements | length }}</div>
+            <div class="lbl">Announcements</div>
+          </div>
+          <div class="stat-box">
+            <div class="num">{{ comments | length }}</div>
+            <div class="lbl">Comments</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Info -->
+      <section class="panel">
+        <h3 class="section-title">Quick Info</h3>
+        <ul class="quick-list">
+          <li><span class="quick-dot"></span> Module code: {{ subject.code }}</li>
+          <li><span class="quick-dot"></span> Course: {{ subject.course_name }}</li>
+        </ul>
+      </section>
+
+      <!-- Talk to Tutor -->
+      <section class="panel">
+        <h3 class="section-title">{% if session.user_role == 'tutor' %}Talk to Your Students{% else %}Talk to Your Tutor{% endif %}</h3>
+        <div style="background:#f3f7fb; border-radius:10px; padding:14px;">
+          <strong style="color:var(--ink);">{{ subject.tutor_name }}</strong>
+          <p style="color:var(--muted); font-size:0.85rem; margin:4px 0 10px;">Subject Tutor</p>
+          <a href="{{ url_for('contact') }}" class="btn btn-primary" style="font-size:0.85rem; padding:8px 14px;">✉️ Message</a>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    menuToggle?.addEventListener('click', () => {
+      const isOpen = sidebar.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+  </script>
+
+</body>
+</html>
