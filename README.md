@@ -28,6 +28,7 @@ repo/
 ├── vulnerable_code/               # Intentionally vulnerable version
 │   ├── app.py                     # Main Flask application (VULNERABLE)
 │   ├── init_db.py                 # Database initialisation script
+│   ├── requirements.txt           # Python dependencies
 │   ├── .env.backup                # Exposed backup file (intentional demo)
 │   ├── .htaccess_bak              # Exposed backup file (intentional demo)
 │   ├── templates/                 # HTML templates
@@ -42,14 +43,18 @@ repo/
 │   │   ├── contact.html
 │   │   └── FirstPage.html
 │   └── static/
-│       ├── css/style.css
-│       └── assets/MMUMediaLogo.png
+│       ├── assets/
+│       │   ├── MMUMediaLogo.png
+│       │   ├── button-drop-down.jpeg
+│       │   └── favicon.ico
+│       └── css/
+│           └── style.css
 │
 └── secure_code/                   # Remediated secure version
     ├── app.py                     # Main Flask application (SECURE)
     ├── init_db.py                 # Database initialisation script
     ├── requirements.txt           # Python dependencies
-    ├── templates/                 # HTML templates (with XSS fix)
+    ├── templates/                 # HTML templates with XSS fix
     │   ├── index.html
     │   ├── login.html
     │   ├── registration.html
@@ -61,10 +66,13 @@ repo/
     │   ├── contact.html
     │   └── FirstPage.html
     └── static/
-        ├── css/style.css
-        └── assets/MMUMediaLogo.png
+        ├── assets/
+        │   ├── MMUMediaLogo.png
+        │   ├── button-drop-down.jpeg
+        │   └── favicon.ico
+        └── css/
+            └── style.css
 ```
-
 ---
 
 ## Quick Start
