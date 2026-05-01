@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Flask / app
+instance/
+.webassets-cache
+
+# Database — never commit the live database
+database.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup / sensitive files (the vulnerability we fixed!)
+*.bak
+*.old
+*.backup
+*.orig
+.env
+.env.*
+config.py.bak
+*.sql.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
