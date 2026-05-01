@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MMU Media — Welcome</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='assets/MMUMediaLogo.png') }}" alt="MMU Media Logo" width="100" height="50">
+    </div>
+    <nav class="nav-buttons">
+      <a href="{{ url_for('about') }}">About</a>
+      {% if session.get('user_id') %}
+      <a href="/dashboard">Go to Dashboard</a>
+      {% else %}
+      <a href="/login">Login</a>
+      <a href="/registration">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section style="background: linear-gradient(135deg, #0c4b62 0%, #0f5f7c 50%, #1a7aa1 100%); color: white; padding: 80px 24px 72px; text-align: center;">
+    <div style="max-width: 680px; margin: 0 auto;">
+      <h1 style="font-size: 2.6rem; font-weight: 800; margin-bottom: 18px; line-height: 1.2;">Welcome to MMU Media</h1>
+      <p style="font-size: 1.1rem; color: #cce5f3; margin-bottom: 36px; line-height: 1.6;">
+        Your all-in-one student portal for Manchester Metropolitan University.
+        Manage your courses, connect with tutors, and stay on top of everything academic — all in one place.
+      </p>
+      <div class="cta-group">
+        {% if session.get('user_id') %}
+        <a href="/dashboard" style="display:inline-flex; align-items:center; padding:14px 32px; background:white; color:#0c4b62; border-radius:10px; font-weight:800; font-size:1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">📊 My Dashboard</a>
+        {% else %}
+        <a href="/login" style="display:inline-flex; align-items:center; padding:14px 32px; background:white; color:#0c4b62; border-radius:10px; font-weight:800; font-size:1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">Sign In</a>
+        <a href="/registration" style="display:inline-flex; align-items:center; padding:14px 32px; background:transparent; color:white; border-radius:10px; font-weight:800; font-size:1rem; border:2px solid rgba(255,255,255,0.7);">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section style="padding: 64px 24px 48px; background: var(--bg);">
+    <div style="text-align: center; margin-bottom: 44px;">
+      <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--ink); margin-bottom: 10px;">Everything you need in one place</h2>
+      <p style="color: var(--muted); font-size: 1rem;">Designed to keep students, tutors, and administrators seamlessly connected.</p>
+    </div>
+    <div class="features" style="max-width: 1100px;">
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-book-half"></i></div>
+        <h3>Course Management</h3>
+        <p>Browse all enrolled courses and drill into individual subjects with tutor info, announcements, and discussions.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-megaphone-fill"></i></div>
+        <h3>Live Announcements</h3>
+        <p>Tutors post real-time subject announcements directly to enrolled students so nothing is ever missed.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-chat-dots-fill"></i></div>
+        <h3>Discussion Boards</h3>
+        <p>Engage with peers and tutors through per-subject comment threads that foster academic dialogue.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-person-badge-fill"></i></div>
+        <h3>Tutor Office Hours</h3>
+        <p>View tutor office numbers and availability so you can plan your one-to-one sessions with ease.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-shield-check-fill"></i></div>
+        <h3>Role-Based Access</h3>
+        <p>Separate dashboards for students, tutors, and admins ensure the right tools reach the right people.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-mortarboard-fill"></i></div>
+        <h3>Academic Progress</h3>
+        <p>Track your academic journey from enrolment through to subject completion — all within a single dashboard.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STATS BANNER -->
+  <section style="background: white; border-top: 1px solid #e6edf3; border-bottom: 1px solid #e6edf3; padding: 52px 24px;">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 720px; margin: 0 auto; text-align: center;">
+      <div>
+        <div style="font-size: 2.4rem; font-weight: 800; color: var(--primary);">12,000+</div>
+        <div style="color: var(--muted); font-size: 0.95rem; margin-top: 6px;">Enrolled Students</div>
+      </div>
+      <div>
+        <div style="font-size: 2.4rem; font-weight: 800; color: var(--primary);">300+</div>
+        <div style="color: var(--muted); font-size: 0.95rem; margin-top: 6px;">Expert Tutors</div>
+      </div>
+      <div>
+        <div style="font-size: 2.4rem; font-weight: 800; color: var(--primary);">80+</div>
+        <div style="color: var(--muted); font-size: 0.95rem; margin-top: 6px;">Courses Available</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA (non-logged-in only) -->
+  {% if not session.get('user_id') %}
+  <section style="padding: 64px 24px;">
+    <div style="max-width: 700px; margin: 0 auto; background: linear-gradient(135deg, #0c4b62, #1a7aa1); border-radius: 16px; padding: 52px 40px; text-align: center; color: white; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+      <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 12px;">Ready to get started?</h3>
+      <p style="color: #cce5f3; font-size: 1rem; margin-bottom: 28px;">Create your free account and access all your courses in minutes.</p>
+      <div class="cta-group">
+        <a href="/registration" style="display:inline-flex; align-items:center; padding:12px 28px; background:white; color:#0c4b62; border-radius:10px; font-weight:800; font-size:0.95rem;">Register Now</a>
+        <a href="/login" style="display:inline-flex; align-items:center; padding:12px 28px; background:transparent; color:white; border-radius:10px; font-weight:800; font-size:0.95rem; border:2px solid rgba(255,255,255,0.7);">Sign In</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <footer>
+  </footer>
+
+</body>
+</html>

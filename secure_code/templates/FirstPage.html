@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Events &amp; Announcements</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  .events-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 12px;
+  }
+  .event-card {
+    background: #fff;
+    border: 1px solid #e4e6eb;
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .event-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+  .event-meta {
+    font-size: 0.82rem;
+    color: #888;
+    margin: 6px 0 10px 0;
+  }
+  .event-meta span {
+    margin-right: 14px;
+  }
+  .event-desc {
+    font-size: 0.93rem;
+    color: #444;
+    line-height: 1.6;
+    margin: 0 0 14px 0;
+  }
+  .btn-signup {
+    background: #c8102e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-signup:hover { background: #a50d26; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px 36px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  .modal-box h3 {
+    margin: 0 0 6px 0;
+    font-size: 1.1rem;
+    color: #1a1a2e;
+  }
+  .modal-event-name {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  .modal-box label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .modal-box input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.93rem;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+  .btn-cancel {
+    background: #f0f0f0;
+    color: #444;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+  .btn-confirm {
+    background: #c8102e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-confirm:hover { background: #a50d26; }
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+    <div class="brand">
+        <img src="{{ url_for('static', filename='assets/MMUMediaLogo.png') }}" alt="Logo" width="100" height="50">
+    </div>
+    <nav class="nav-buttons">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    </nav>
+</header>
+
+<div class="app" style="grid-template-columns: 240px 1fr">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+        <div class="profile">
+            <div class="avatar">{{ session.user_name[0] | upper }}{{ session.user_last_name[0] | upper }}</div>
+            <div class="identity">
+                <div class="name">{{ session.user_name }} {{ session.user_last_name }}</div>
+                <div class="status">Active</div>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+            <a href="{{ url_for('firstPage') }}" class="active">Events &amp; Announcements</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('contact') }}">Contact Page</a>
+            <a href="{{ url_for('logout') }}" class="nav-logout">🔓 Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <div class="greeting">Events &amp; Announcements</div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="events-grid">
+
+            <!-- Event 1 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <div>
+                        <p class="event-title">End-of-Year Media Showcase</p>
+                        <div class="event-meta">
+                            <span>📅 25 April 2026</span>
+                            <span>📍 Geoffrey Manton Building, Room GM101</span>
+                        </div>
+                        <p class="event-desc">
+                            Celebrate the academic year with MMU Media's flagship student showcase. Students from
+                            all media disciplines — journalism, film, photography, and digital design — will present
+                            their best work to peers, tutors, and invited industry guests. This is your chance to
+                            network, get feedback from professionals, and see the creative talent across the faculty.
+                            Light refreshments will be provided after the presentations.
+                        </p>
+                    </div>
+                    <button class="btn-signup" onclick="openModal('End-of-Year Media Showcase')">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Event 2 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <div>
+                        <p class="event-title">Guest Lecture: Cybersecurity in the Modern Age</p>
+                        <div class="event-meta">
+                            <span>📅 10 April 2026</span>
+                            <span>📍 Business School Lecture Theatre B</span>
+                        </div>
+                        <p class="event-desc">
+                            Join us for a guest lecture delivered by a senior security consultant from a leading UK
+                            cybersecurity firm. The talk will cover the current threat landscape, common attack vectors
+                            affecting organisations today, and how graduates can break into the industry. Students on
+                            Network Security, Computer Science, and Business Management programmes are especially
+                            encouraged to attend. A Q&amp;A session will follow the lecture.
+                        </p>
+                    </div>
+                    <button class="btn-signup" onclick="openModal('Guest Lecture: Cybersecurity in the Modern Age')">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Event 3 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <div>
+                        <p class="event-title">MMU Careers Fair 2026</p>
+                        <div class="event-meta">
+                            <span>📅 14 May 2026</span>
+                            <span>📍 Manchester Central Convention Complex</span>
+                        </div>
+                        <p class="event-desc">
+                            Over 80 employers from media, technology, finance, and the public sector will be present
+                            at this year's careers fair. Bring your CV and come prepared to speak directly with
+                            recruiters about graduate roles, placement years, and internship opportunities. The
+                            university's careers service will also have a stand offering CV reviews and mock
+                            interview sign-ups on the day. Attendance is free for all enrolled MMU students.
+                        </p>
+                    </div>
+                    <button class="btn-signup" onclick="openModal('MMU Careers Fair 2026')">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Event 4 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <div>
+                        <p class="event-title">Photography &amp; Videography Workshop</p>
+                        <div class="event-meta">
+                            <span>📅 22 May 2026</span>
+                            <span>📍 Media Arts Studio, Benzie Building</span>
+                        </div>
+                        <p class="event-desc">
+                            A hands-on practical workshop covering essential skills in photography composition and
+                            short-form video production. Led by two MMU Media alumni now working in the creative
+                            industry, the session will include live demonstrations, shooting exercises, and a
+                            group critique at the end. Equipment will be provided, but students are welcome to
+                            bring their own cameras. Places are limited to 20 participants — sign up early.
+                        </p>
+                    </div>
+                    <button class="btn-signup" onclick="openModal('Photography &amp; Videography Workshop')">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Event 5 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <div>
+                        <p class="event-title">Student Union End-of-Year Social Night</p>
+                        <div class="event-meta">
+                            <span>📅 5 June 2026</span>
+                            <span>📍 MMU Student Union, Oxford Road</span>
+                        </div>
+                        <p class="event-desc">
+                            Wind down the academic year with an evening of food, music, and good company at the
+                            official Student Union social event. The night will feature a DJ set, themed photo booth,
+                            and a short awards ceremony recognising student contributions to university life.
+                            All MMU students are welcome regardless of course or year group. Tickets are free
+                            but must be reserved in advance due to venue capacity.
+                        </p>
+                    </div>
+                    <button class="btn-signup" onclick="openModal('Student Union End-of-Year Social Night')">Sign Up</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- SIGN-UP MODAL -->
+<div class="modal-overlay" id="signupModal">
+    <div class="modal-box">
+        <h3>Event Registration</h3>
+        <p class="modal-event-name" id="modalEventName"></p>
+
+        <form id="signupForm" method="POST" action="{{ url_for('events_signup') }}">
+            <input type="hidden" id="modalEventInput" name="event_name" value="">
+
+            <label for="modalName">Full Name</label>
+            <input type="text" id="modalName" name="full_name" placeholder="e.g. James Taylor" required>
+
+            <label for="modalEmail">University Email</label>
+            <input type="email" id="modalEmail" name="email" placeholder="e.g. j.taylor@stu.mmu.ac.uk" required>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-confirm">Confirm Registration</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal(eventName) {
+        document.getElementById('modalEventName').textContent = eventName;
+        document.getElementById('modalEventInput').value = eventName;
+        document.getElementById('modalName').value = '';
+        document.getElementById('modalEmail').value = '';
+        document.getElementById('signupModal').classList.add('open');
+    }
+    function closeModal() {
+        document.getElementById('signupModal').classList.remove('open');
+    }
+    document.getElementById('signupModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
+
+</body>
+</html>

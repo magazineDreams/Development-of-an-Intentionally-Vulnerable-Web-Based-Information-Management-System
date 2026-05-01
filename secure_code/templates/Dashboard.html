@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- This is the link to my css -->>
+ 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+	<body>
+
+  		<!-- Top bar (same style as reference; search removed) -->
+
+  			<header class="topbar">
+
+    		<div class="brand">
+
+			<img src="{{ url_for('static', filename='assets/MMUMediaLogo.png') }}" alt="Logo" width="100" height="50">
+
+    		</div>
+
+    <!-- spacer keeps the 3-area grid without a center search -->
+
+    <nav class="nav-buttons">
+      <a href="{{ url_for('profile') }}">Profile</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">Menu</button>
+
+  </header>
+
+  <!--menu -->
+
+  <div class="app">
+
+
+<!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="profile">
+            <div class="avatar">{{ session.user_name[0] | upper }}{{ session.user_last_name[0] | upper }}</div>
+            <div class="identity">
+                <div class="name">{{ session.user_name }} {{ session.user_last_name }}</div>
+                <div class="status">Active</div>
+            </div>
+        </div>
+
+      <nav class="nav" aria-label="Main">
+
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('dashboard') }}">My Dashboard</a></li>
+
+	    <li><a href="{{ url_for('firstPage') }}">Events &amp; Announcements</a></li>
+
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+
+            <li><a href="{{ url_for('contact') }}">Contact Page</a></li>
+            <li><a href="{{ url_for('logout') }}" class="nav-logout">🔓 Logout</a></li>
+
+      </nav>
+
+    </aside>
+
+
+
+    <!-- Center column (your sections) -->
+
+    <main class="main" aria-label="Main content">
+
+      <section class="greeting">Hello, {{ session.user_name }}</section>
+
+{% if session.user_role == 'tutor' %}
+
+      <!-- Personal Details (Tutor) -->
+      <section class="panel">
+        <h2 class="section-title">Personal Details</h2>
+        <div class="details-grid">
+          <div class="detail">
+            <span class="label">Name:</span>
+            <span class="value">{{ session.user_name }} {{ session.user_last_name }}</span>
+          </div>
+          <div class="detail">
+            <span class="label">Email:</span>
+            <span class="value">{{ session.user_email }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Teaching Overview -->
+      <section class="panel">
+        <h2 class="section-title">Teaching Overview</h2>
+        <div class="stats-overview">
+          <div class="stat-box">
+            <div class="num">{{ stats.subjects }}</div>
+            <div class="lbl">Subjects Teaching</div>
+          </div>
+          <div class="stat-box">
+            <div class="num">{{ stats.students }}</div>
+            <div class="lbl">Enrolled Students</div>
+          </div>
+          <div class="stat-box">
+            <div class="num">{{ stats.announcements }}</div>
+            <div class="lbl">Announcements Posted</div>
+          </div>
+          <div class="stat-box">
+            <div class="num">{{ stats.comments }}</div>
+            <div class="lbl">Student Comments</div>
+          </div>
+        </div>
+
+        <h3 class="subheading" style="margin-top:20px;">My Subjects</h3>
+        <div class="module-grid">
+          {% for subj in tutor_subjects %}
+          <div class="module-card" style="gap:8px;">
+            <span class="module-code">{{ subj.code }}</span>
+            <span class="module-name">{{ subj.name }}</span>
+            <span style="font-size:0.8rem; color:var(--muted);">{{ subj.course_name }}</span>
+            <a href="{{ url_for('subject', subject_id=subj.id) }}" class="btn btn-primary" style="margin-top:4px; font-size:0.8rem; padding:6px 12px;">View Subject</a>
+          </div>
+          {% else %}
+          <p class="empty-state">No subjects assigned yet.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- My Students -->
+      <section class="panel">
+        <h2 class="section-title">My Students</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Course</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+            <tr>
+              <td>{{ student.first_name }} {{ student.last_name }}</td>
+              <td>{{ student.email }}</td>
+              <td>{{ student.course_name }} ({{ student.course_code }})</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3" style="text-align:center; color:var(--muted); font-style:italic; padding:20px;">No students enrolled yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Office Information -->
+      <section class="panel">
+        <h2 class="section-title">Office Information</h2>
+        <div class="details-grid" style="margin-bottom:20px;">
+          <div class="detail">
+            <span class="label">Office:</span>
+            <span class="value">{{ tutor_office.office_number or '—' }}</span>
+          </div>
+          <div class="detail">
+            <span class="label">Office Hours:</span>
+            <span class="value">{{ tutor_office.office_hours or '—' }}</span>
+          </div>
+        </div>
+        <form method="POST" action="{{ url_for('update_office') }}">
+          <div class="form-group">
+            <label for="office_number">Office Number</label>
+            <input type="text" id="office_number" name="office_number" value="{{ tutor_office.office_number }}" placeholder="e.g. Room 2.04">
+          </div>
+          <div class="form-group">
+            <label for="office_hours">Office Hours</label>
+            <input type="text" id="office_hours" name="office_hours" value="{{ tutor_office.office_hours }}" placeholder="e.g. Mon &amp; Wed 10–12">
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </section>
+
+{% else %}
+
+      <!-- Personal Details (Student) -->
+
+      <section class="panel">
+
+        <h2 class="section-title">Personal Details</h2>
+
+        <div class="details-grid">
+
+          <div class="detail">
+
+            <span class="label">Student ID:</span>
+
+            <span class="value">{{ session.user_id }}</span>
+
+          </div>
+
+          <div class="detail">
+
+            <span class="label">Name:</span>
+
+            <span class="value">{{ session.user_name }} {{ session.user_last_name }}</span>
+
+          </div>
+
+          <div class="detail">
+
+            <span class="label">Email:</span>
+
+            <span class="value">{{ session.user_email }}</span>
+
+          </div>
+
+          <div class="detail detail-full">
+
+            <span class="label">Course:</span>
+
+            <span class="value">{% for course in courses %}{{ course.name }} ({{ course.code }}){% endfor %}</span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- Academic Information -->
+
+      <section class="panel">
+
+        <h2 class="section-title">Academic Information</h2>
+
+        <h3 class="subheading">Current Modules</h3>
+
+        <div class="module-grid">
+          {% for course in courses %}
+            {% for subject in course.subjects %}
+              <a href="{{ url_for('subject', subject_id=subject.id) }}" class="module-card">
+                <span class="module-code">{{ subject.code }}</span>
+                <span class="module-name">{{ subject.name }}</span>
+              </a>
+            {% endfor %}
+          {% endfor %}
+        </div>
+
+      </section>
+
+      <!-- Timetable -->
+
+      <section class="panel">
+
+        <h3>Timetable</h3>
+
+        <div class="timetable" role="table" aria-label="Weekly timetable">
+
+          <div class="tt-header tt-empty" role="columnheader"></div>
+          <div class="tt-header" role="columnheader">Mon</div>
+          <div class="tt-header" role="columnheader">Tue</div>
+          <div class="tt-header" role="columnheader">Wed</div>
+          <div class="tt-header" role="columnheader">Thu</div>
+          <div class="tt-header" role="columnheader">Fri</div>
+
+          <div class="tt-time" role="rowheader">09:00</div>
+          <div class="tt-cell">{{ schedule.get(('Mon', '09:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Tue', '09:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Wed', '09:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Thu', '09:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Fri', '09:00'), '') }}</div>
+
+          <div class="tt-time" role="rowheader">10:00</div>
+          <div class="tt-cell">{{ schedule.get(('Mon', '10:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Tue', '10:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Wed', '10:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Thu', '10:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Fri', '10:00'), '') }}</div>
+
+          <div class="tt-time" role="rowheader">11:00</div>
+          <div class="tt-cell">{{ schedule.get(('Mon', '11:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Tue', '11:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Wed', '11:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Thu', '11:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Fri', '11:00'), '') }}</div>
+
+          <div class="tt-time" role="rowheader">12:00</div>
+          <div class="tt-cell break">Lunch</div>
+          <div class="tt-cell break">Lunch</div>
+          <div class="tt-cell break">Lunch</div>
+          <div class="tt-cell break">Lunch</div>
+          <div class="tt-cell break">Lunch</div>
+
+          <div class="tt-time" role="rowheader">13:00</div>
+          <div class="tt-cell">{{ schedule.get(('Mon', '13:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Tue', '13:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Wed', '13:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Thu', '13:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Fri', '13:00'), '') }}</div>
+
+          <div class="tt-time" role="rowheader">14:00</div>
+          <div class="tt-cell">{{ schedule.get(('Mon', '14:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Tue', '14:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Wed', '14:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Thu', '14:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Fri', '14:00'), '') }}</div>
+
+          <div class="tt-time" role="rowheader">15:00</div>
+          <div class="tt-cell">{{ schedule.get(('Mon', '15:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Tue', '15:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Wed', '15:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Thu', '15:00'), '') }}</div>
+          <div class="tt-cell">{{ schedule.get(('Fri', '15:00'), '') }}</div>
+
+        </div>
+
+      </section>
+
+{% endif %}
+
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="right">
+
+      {% if session.user_role == 'tutor' %}
+
+      <!-- Tutor: Quick Stats -->
+      <section class="panel">
+        <h3 class="section-title">Teaching Overview</h3>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="num">{{ stats.subjects }}</div>
+            <div class="lbl">Subjects</div>
+          </div>
+          <div class="stat-box">
+            <div class="num">{{ stats.students }}</div>
+            <div class="lbl">Students</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tutor: Talk to Your Students -->
+      <section class="panel">
+        <h3 class="section-title">Talk to Your Students</h3>
+        <div style="background:#f3f7fb; border-radius:10px; padding:14px;">
+          <strong style="color:var(--ink);">{{ stats.students }} student{{ 's' if stats.students != 1 else '' }} enrolled</strong>
+          <p style="color:var(--muted); font-size:0.85rem; margin:4px 0 10px;">
+            across {{ stats.subjects }} subject{{ 's' if stats.subjects != 1 else '' }} you teach
+          </p>
+          <a href="{{ url_for('contact') }}" class="btn btn-primary" style="font-size:0.85rem; padding:8px 14px;">✉️ Message Students</a>
+        </div>
+      </section>
+
+      <!-- Tutor: My Subjects Quick List -->
+      <section class="panel">
+        <h3 class="section-title">My Subjects</h3>
+        <ul class="quick-list">
+          {% for subj in tutor_subjects %}
+          <li>
+            <span class="quick-dot"></span>
+            <a href="{{ url_for('subject', subject_id=subj.id) }}" style="color:var(--ink); text-decoration:none;">
+              <strong>{{ subj.code }}</strong> — {{ subj.name }}
+            </a>
+          </li>
+          {% else %}
+          <li style="color:var(--muted); font-style:italic;">No subjects assigned.</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      {% else %}
+
+      <!-- Student: Talk to Your Tutors -->
+      <section class="panel">
+        <h3 class="section-title">Talk to Your Tutors</h3>
+        {% for tutor in tutors %}
+        <div style="background:#f3f7fb; border-radius:10px; padding:14px; margin-bottom:12px;">
+          <strong style="color:var(--ink);">{{ tutor.name }}</strong>
+          <p style="color:var(--muted); font-size:0.85rem; margin:4px 0 6px;">{{ tutor.subject }}</p>
+          <ul style="list-style:none; padding:0; margin:0 0 10px; font-size:0.82rem; color:var(--muted);">
+            <li>🚪 {{ tutor.office }}</li>
+            <li>🕐 {{ tutor.hours }}</li>
+          </ul>
+          <a href="{{ url_for('contact') }}" class="btn btn-primary" style="font-size:0.85rem; padding:8px 14px;">✉️ Message</a>
+        </div>
+        {% else %}
+        <p class="empty-state">No tutors found.</p>
+        {% endfor %}
+      </section>
+
+      {% endif %}
+
+    </aside>
+
+  </div>
+
+  <script>
+
+    const menuToggle = document.getElementById('menuToggle');
+
+    const sidebar = document.getElementById('sidebar');
+
+    menuToggle?.addEventListener('click', () => {
+
+      const isOpen = sidebar.classList.toggle('open');
+
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+
+    });
+
+  </script>
+
+</body>
+
+</html>

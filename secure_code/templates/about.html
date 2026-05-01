@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — MMU Media</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='assets/MMUMediaLogo.png') }}" alt="MMU Media Logo" width="100" height="50">
+    </div>
+    <nav class="nav-buttons">
+      <a href="{{ url_for('index') }}">Home</a>
+      {% if session.get('user_id') %}
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('registration') }}">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <section style="background: white; border-bottom: 1px solid #e6edf3; padding: 36px 0;">
+    <div style="max-width: 1100px; margin: 0 auto; padding: 0 32px;">
+      <ol class="breadcrumb" style="margin-bottom: 10px;">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li>About</li>
+      </ol>
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--ink); margin-bottom: 8px;">About MMU Media</h1>
+      <p style="color: var(--muted); font-size: 1.05rem; margin: 0;">Empowering students through innovation, community, and excellence.</p>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section style="padding: 60px 32px; max-width: 1100px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 56px;">
+
+      <!-- Text -->
+      <div>
+        <h2 style="font-size: 1.7rem; font-weight: 800; color: var(--ink); margin-bottom: 16px;">Our Mission</h2>
+        <p style="color: var(--muted); line-height: 1.7; margin-bottom: 14px;">
+          MMU Media is committed to delivering high-quality education through a digital-first
+          student portal. We bridge the gap between students and tutors with transparent course
+          management, real-time announcements, and collaborative discussion spaces.
+        </p>
+        <p style="color: var(--muted); line-height: 1.7; margin: 0;">
+          Our platform is built on the belief that access to clear, structured academic information
+          drives student success. Every feature is designed with the learner experience at its core.
+        </p>
+      </div>
+
+      <!-- Stats card -->
+      <div class="panel" style="padding: 32px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center;">
+          <div>
+            <div style="font-size: 2.2rem; font-weight: 800; color: var(--primary);">12k+</div>
+            <div style="color: var(--muted); font-size: 0.88rem; margin-top: 4px;">Students</div>
+          </div>
+          <div>
+            <div style="font-size: 2.2rem; font-weight: 800; color: var(--primary);">300+</div>
+            <div style="color: var(--muted); font-size: 0.88rem; margin-top: 4px;">Tutors</div>
+          </div>
+          <div>
+            <div style="font-size: 2.2rem; font-weight: 800; color: var(--primary);">80+</div>
+            <div style="color: var(--muted); font-size: 0.88rem; margin-top: 4px;">Courses</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FEATURE CARDS -->
+    <div class="features" style="max-width: 1100px; margin-bottom: 56px;">
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-laptop"></i></div>
+        <h3>Digital-First Learning</h3>
+        <p>Our portal provides seamless access to course materials, subject announcements, and peer discussions from any device, anywhere.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-person-check-fill"></i></div>
+        <h3>Expert Tutors</h3>
+        <p>Our tutors bring real-world expertise to every subject, offering dedicated office hours and direct communication channels for personalised guidance.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-bar-chart-line-fill"></i></div>
+        <h3>Student Success</h3>
+        <p>Integrated dashboards keep students and tutors aligned on progress, enrolments, and upcoming academic milestones at all times.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-people-fill"></i></div>
+        <h3>Inclusive Community</h3>
+        <p>We foster an inclusive academic environment where every student voice is heard through open discussion boards and transparent communications.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-shield-check-fill"></i></div>
+        <h3>Secure &amp; Reliable</h3>
+        <p>Role-based access control ensures students, tutors, and admins each have the right permissions and data visibility for their role.</p>
+      </div>
+
+      <div class="panel feature">
+        <div class="feature-icon" style="color: var(--primary);"><i class="bi bi-clock-history"></i></div>
+        <h3>Always Available</h3>
+        <p>The student portal is available 24/7 so you can review course content, check announcements, and connect with peers on your own schedule.</p>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    {% if not session.get('user_id') %}
+    <div style="background: linear-gradient(135deg, #0c4b62, #1a7aa1); border-radius: 16px; padding: 52px 40px; text-align: center; color: white; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+      <h4 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 10px;">Ready to join the community?</h4>
+      <p style="color: #cce5f3; font-size: 1rem; margin-bottom: 28px;">Register for free and access your personalised academic dashboard today.</p>
+      <div class="cta-group">
+        <a href="{{ url_for('registration') }}" style="display:inline-flex; align-items:center; padding:12px 28px; background:white; color:#004999; border-radius:10px; font-weight:800; font-size:0.95rem;">Register Now</a>
+        <a href="{{ url_for('contact') }}" style="display:inline-flex; align-items:center; padding:12px 28px; background:transparent; color:white; border-radius:10px; font-weight:800; font-size:0.95rem; border:2px solid rgba(255,255,255,0.7);">Get in Touch</a>
+      </div>
+    </div>
+    {% endif %}
+
+  </section>
+
+  <footer>
+  </footer>
+
+</body>
+</html>
